@@ -157,8 +157,10 @@ class Client
                 default => throw new Exception('Unsupported scheme'),
             };
 
-            $path         = $parsedUrl['path'] ?? '';
-            $path         = $path !== '' ? $path : '/';
+            $path = $parsedUrl['path'] ?? '/';
+            if ($parsedUrl['query']) {
+                $path .= '?' . $parsedUrl['query'];
+            }
             $this->stream = match ($scheme) {
                 'ws'    => Socket::connect("tcp://{$host}:{$port}", $this->timeout, $this->context),
                 'wss'   => Socket::connectWithSSL("ssl://{$host}:{$port}", $this->timeout, $this->context),
